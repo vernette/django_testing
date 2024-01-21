@@ -5,12 +5,19 @@ from pytils.translit import slugify
 
 from notes.forms import WARNING
 from notes.models import Note
-from notes.tests.constants import (EXPECTED_OPERATION_FAILURE,
-                                   EXPECTED_OPERATION_SUCCESS, NEW_NOTE_SLUG,
-                                   NEW_NOTE_TEXT, NEW_NOTE_TITLE,
-                                   NOTE_AUTHOR_TEXT, NOTE_DEFAULT_USER_TEXT,
-                                   NOTE_READER_TEXT, NOTE_SLUG, NOTE_TEXT,
-                                   NOTE_TITLE)
+
+NOTE_TITLE = 'Заголовок заметки'
+NOTE_TEXT = 'Текст заметки'
+NOTE_SLUG = 'test'
+NEW_NOTE_TITLE = 'Обновлённый заголовок заметки'
+NEW_NOTE_TEXT = 'Обновлённый текст заметки'
+NEW_NOTE_SLUG = 'test1'
+NOTE_AUTHOR_TEXT = 'Автор'
+NOTE_READER_TEXT = 'Читатель'
+NOTE_DEFAULT_USER_TEXT = 'Пользователь'
+EXPECTED_OPERATION_SUCCESS = 1
+EXPECTED_OPERATION_FAILURE = 0
+
 
 User = get_user_model()
 

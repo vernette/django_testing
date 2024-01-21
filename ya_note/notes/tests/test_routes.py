@@ -5,8 +5,12 @@ from django.test import TestCase
 from django.urls import reverse
 
 from notes.models import Note
-from notes.tests.constants import (NOTE_AUTHOR_TEXT, NOTE_READER_TEXT,
-                                   NOTE_SLUG, NOTE_TEXT, NOTE_TITLE)
+
+NOTE_TITLE = 'Заголовок заметки'
+NOTE_TEXT = 'Текст заметки'
+NOTE_SLUG = 'test'
+NOTE_AUTHOR_TEXT = 'Автор'
+NOTE_READER_TEXT = 'Читатель'
 
 User = get_user_model()
 
