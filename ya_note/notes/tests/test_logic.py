@@ -6,17 +6,17 @@ from pytils.translit import slugify
 from notes.forms import WARNING
 from notes.models import Note
 
-NOTE_TITLE = 'Заголовок заметки'
-NOTE_TEXT = 'Текст заметки'
-NOTE_SLUG = 'test'
-NEW_NOTE_TITLE = 'Обновлённый заголовок заметки'
-NEW_NOTE_TEXT = 'Обновлённый текст заметки'
-NEW_NOTE_SLUG = 'test1'
-NOTE_AUTHOR_TEXT = 'Автор'
-NOTE_READER_TEXT = 'Читатель'
-NOTE_DEFAULT_USER_TEXT = 'Пользователь'
-EXPECTED_OPERATION_SUCCESS = 1
-EXPECTED_OPERATION_FAILURE = 0
+NOTE_TITLE: str = 'Заголовок заметки'
+NOTE_TEXT: str = 'Текст заметки'
+NOTE_SLUG: str = 'test'
+NEW_NOTE_TITLE: str = 'Обновлённый заголовок заметки'
+NEW_NOTE_TEXT: str = 'Обновлённый текст заметки'
+NEW_NOTE_SLUG: str = 'test1'
+NOTE_AUTHOR_TEXT: str = 'Автор'
+NOTE_READER_TEXT: str = 'Читатель'
+NOTE_DEFAULT_USER_TEXT: str = 'Пользователь'
+EXPECTED_OPERATION_SUCCESS: int = 1
+EXPECTED_OPERATION_FAILURE: int = 0
 
 
 User = get_user_model()
@@ -38,6 +38,10 @@ class TestNoteCreation(TestCase):
         }
 
     def test_note_creation_for_different_users(self):
+        """
+        Verifies that a logged in user can create a note,
+        but an anonymous user cannot.
+        """
         user_expected_results = (
             (self.client, EXPECTED_OPERATION_FAILURE),
             (self.auth_client, EXPECTED_OPERATION_SUCCESS),
@@ -54,6 +58,7 @@ class TestNoteCreation(TestCase):
                     self.assertEqual(note.slug, NOTE_SLUG)
 
     def test_cannot_create_slug_duplicate(self):
+        """Verifies that a note with a duplicate slug cannot be created"""
         self.auth_client.post(self.url, data=self.form_data)
         self.form_data['slug'] = Note.objects.get().slug
         response = self.auth_client.post(self.url, data=self.form_data)
@@ -65,6 +70,10 @@ class TestNoteCreation(TestCase):
         self.assertEqual(Note.objects.count(), EXPECTED_OPERATION_SUCCESS)
 
     def test_empty_slug(self):
+        """
+        Verifies that a note is created with a correct slug
+        when the slug is empty.
+        """
         self.form_data.pop('slug', None)
         expected_slug = slugify(self.form_data['title'])
         response = self.auth_client.post(self.url, data=self.form_data)
@@ -94,6 +103,7 @@ class TestCommentEditDelete(TestCase):
         }
 
     def test_user_cant_delete_note_of_another_user(self):
+        """Verifies that a user cannot delete a note by another user"""
         users_expected_results = (
             (self.reader, EXPECTED_OPERATION_SUCCESS),
             (self.author, EXPECTED_OPERATION_FAILURE),
@@ -106,6 +116,7 @@ class TestCommentEditDelete(TestCase):
                 self.assertEqual(notes_count, expected_result)
 
     def test_user_cant_edit_note_of_another_user(self):
+        """Verifies that a user cannot edit a note authored by another user"""
         users_expected_results = (
             (self.reader, NOTE_TEXT),
             (self.author, NEW_NOTE_TEXT),

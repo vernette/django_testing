@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 import pytest
+from django.conf import settings
 from django.utils import timezone
 
 from news.models import Comment, News
@@ -42,6 +43,18 @@ def news():
     return News.objects.create(
         title=NEWS_TITLE,
         text=NEWS_TEXT,
+    )
+
+
+@pytest.fixture
+def news_list():
+    return News.objects.bulk_create(
+        News(
+            title=f'{NEWS_TITLE} {i}',
+            text=f'{NEWS_TEXT} {i}',
+            date=timezone.now() - timezone.timedelta(days=i)
+        )
+        for i in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1)
     )
 
 

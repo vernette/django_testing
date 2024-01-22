@@ -1,11 +1,10 @@
-from pytils.translit import slugify
-
 from django import forms
 from django.core.exceptions import ValidationError
+from pytils.translit import slugify
 
 from .models import Note
 
-WARNING = ' - такой slug уже существует, придумайте уникальное значение!'
+WARNING: str = ' - такой slug уже существует, придумайте уникальное значение!'
 
 
 class NoteForm(forms.ModelForm):

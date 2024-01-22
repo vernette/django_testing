@@ -4,6 +4,8 @@ import pytest
 from django.urls import reverse
 from pytest_django.asserts import assertRedirects
 
+pytestmark = pytest.mark.django_db
+
 
 @pytest.mark.parametrize(
     'name, args',
@@ -15,8 +17,8 @@ from pytest_django.asserts import assertRedirects
         ('users:signup', None),
     )
 )
-@pytest.mark.django_db
 def test_pages_availability_for_anonymous_user(client, name, news, args):
+    """Verifies that pages are available for an anonymous user"""
     url = reverse(name, args=args)
     response = client.get(url)
     assert response.status_code == HTTPStatus.OK
@@ -29,8 +31,11 @@ def test_pages_availability_for_anonymous_user(client, name, news, args):
         ('news:delete', pytest.lazy_fixture('comment_id_for_args')),
     ),
 )
-@pytest.mark.django_db
 def test_anonymous_user_redirects(client, name, args):
+    """
+    Verifies that an anonymous user is redirected
+    to the login page for certain actions
+    """
     login_url = reverse('users:login')
     url = reverse(name, args=args)
     expected_url = f'{login_url}?next={url}'
@@ -55,6 +60,10 @@ def test_anonymous_user_redirects(client, name, args):
 def test_pages_availability_for_different_users(
         parametrized_client, name, comment, expected_status, args
 ):
+    """
+    Verifies that certain pages are available
+    or not available for different users
+    """
     url = reverse(name, args=args)
     response = parametrized_client.get(url)
     assert response.status_code == expected_status
