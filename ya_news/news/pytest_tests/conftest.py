@@ -2,16 +2,17 @@ from datetime import timedelta
 
 import pytest
 from django.utils import timezone
+
 from news.models import Comment, News
 
-NEWS_TITLE = 'Заголовок новости'
-NEWS_TEXT = 'Текст новости'
-COMMENT_TEXT = 'Текст комментария'
-NEW_COMMENT_TEXT = 'Обновлённый текст комментария'
-NEWS_AUTHOR_TEXT = 'Автор'
-NEWS_DEFAULT_USER_TEXT = 'Пользователь'
-NEW_NEWS_TEXT = 'Обновлённый текст заметки'
-NEW_NEWS_TITLE = 'Обновлённый заголовок заметки'
+NEWS_TITLE: str = 'Заголовок новости'
+NEWS_TEXT: str = 'Текст новости'
+COMMENT_TEXT: str = 'Текст комментария'
+NEW_COMMENT_TEXT: str = 'Обновлённый текст комментария'
+NEWS_AUTHOR_TEXT: str = 'Автор'
+NEWS_DEFAULT_USER_TEXT: str = 'Пользователь'
+NEW_NEWS_TEXT: str = 'Обновлённый текст заметки'
+NEW_NEWS_TITLE: str = 'Обновлённый заголовок заметки'
 
 
 @pytest.fixture
@@ -38,27 +39,26 @@ def author_client(author, client):
 
 @pytest.fixture
 def news():
-    new_news = News.objects.create(
+    return News.objects.create(
         title=NEWS_TITLE,
         text=NEWS_TEXT,
     )
-    return new_news
 
 
 @pytest.fixture
 def news_with_comments(news, author, comment):
-    now = timezone.now()
-    comments = []
-    for index in range(2):
-        new_comment = Comment.objects.create(
-            news=news,
-            author=author,
-            text=f'{COMMENT_TEXT} {index}'
-        )
-        new_comment.created = now + timedelta(days=index)
-        new_comment.save()
-        comments.append(new_comment)
-    return news, comments
+    return (
+        news,
+        [
+            Comment.objects.create(
+                news=news,
+                author=author,
+                text=f'{COMMENT_TEXT} {index}',
+                created=timezone.now() + timedelta(days=index)
+            )
+            for index in range(2)
+        ]
+    )
 
 
 @pytest.fixture
@@ -68,12 +68,11 @@ def news_id_for_args(news):
 
 @pytest.fixture
 def comment(news, author):
-    new_comment = Comment.objects.create(
+    return Comment.objects.create(
         news=news,
         author=author,
         text=COMMENT_TEXT
     )
-    return new_comment
 
 
 @pytest.fixture
